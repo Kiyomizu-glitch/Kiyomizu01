@@ -1,0 +1,1141 @@
+<!doctype html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🏯 Kiyomizu Cash Coupon Manager</title>
+
+  <style>
+    :root {
+      --bg-gradient: linear-gradient(135deg, #e0f0ff 0%, #eef2ff 40%, #dde9ff 100%);
+      --primary: #3b82f6;
+      --primary-soft: #e0edff;
+      --primary-strong: #2563eb;
+      --danger: #ef4444;
+      --danger-soft: #fee2e2;
+      --success: #16a34a;
+      --success-soft: #dcfce7;
+      --warning: #f59e0b;
+      --warning-soft: #fef3c7;
+      --card-bg: #ffffff;
+      --card-border: #e5e7eb;
+      --text-main: #111827;
+      --text-muted: #6b7280;
+      --shadow-soft: 0 18px 45px rgba(15, 23, 42, 0.15);
+      --radius-xl: 18px;
+      --radius-lg: 14px;
+      --radius-md: 10px;
+      --transition-fast: 0.18s ease-out;
+    }
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: var(--bg-gradient);
+      min-height: 100vh;
+      padding: 20px;
+      color: var(--text-main);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .app-shell {
+      max-width: 1100px;
+      margin: 0 auto;
+      background: radial-gradient(circle at top left, #eef5ff 0, #ffffff 45%);
+      border-radius: 26px;
+      box-shadow: var(--shadow-soft);
+      padding: 26px 26px 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    /* แถบไตเติลด้านบน */
+    header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding-bottom: 20px;
+      border-bottom: 1px solid #e5e7eb;
+      margin-bottom: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .brand-logo {
+      width: 40px;
+      height: 40px;
+      border-radius: 14px;
+      background: conic-gradient(from 210deg, #2563eb, #4f46e5, #60a5fa, #2563eb);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #f9fafb;
+      box-shadow: 0 10px 25px rgba(37, 99, 235, 0.45);
+      font-size: 22px;
+    }
+
+    h1 {
+      font-size: 20px;
+      font-weight: 700;
+      color: #111827;
+      letter-spacing: 0.02em;
+    }
+
+    .subtitle {
+      font-size: 13px;
+      color: var(--text-muted);
+    }
+
+    .header-right {
+      font-size: 11px;
+      color: var(--text-muted);
+      text-align: right;
+    }
+
+    /* DASHBOARD */
+    .dashboard {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+      gap: 14px;
+      margin-bottom: 10px;
+    }
+
+    .stat-card {
+      border-radius: var(--radius-lg);
+      padding: 14px 16px;
+      background: linear-gradient(135deg, #f9fbff 0%, #eef2ff 55%, #e0ecff 100%);
+      border: 1px solid rgba(148, 163, 184, 0.25);
+      box-shadow: 0 10px 22px rgba(15, 23, 42, 0.05);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .stat-card::after {
+      content: "";
+      position: absolute;
+      right: -20px;
+      top: -20px;
+      width: 80px;
+      height: 80px;
+      background: radial-gradient(circle, rgba(59,130,246,0.2), transparent 60%);
+      opacity: 0.7;
+    }
+
+    .stat-label-row {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 6px;
+    }
+
+    .stat-label {
+      font-size: 13px;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .stat-pill {
+      font-size: 11px;
+      padding: 2px 8px;
+      border-radius: 999px;
+      background: rgba(37, 99, 235, 0.06);
+      color: var(--primary-strong);
+    }
+
+    .stat-value {
+      font-size: 24px;
+      font-weight: 700;
+      color: #0f172a;
+      letter-spacing: -0.04em;
+    }
+
+    .transaction-count {
+      text-align: center;
+      color: var(--text-muted);
+      margin: 10px 0 20px;
+      font-size: 13px;
+    }
+
+    .transaction-count strong {
+      color: var(--primary-strong);
+    }
+
+    /* FORM SECTION */
+    .section-card {
+      background: #f9fafb;
+      border-radius: var(--radius-xl);
+      padding: 20px 18px 18px;
+      border: 1px solid #e5e7eb;
+      margin-bottom: 20px;
+    }
+
+    .section-heading {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 14px;
+      font-size: 15px;
+      font-weight: 600;
+      color: #111827;
+    }
+
+    .section-heading span.icon {
+      width: 24px;
+      height: 24px;
+      border-radius: 999px;
+      background: rgba(37,99,235,0.08);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 14px;
+      color: var(--primary-strong);
+    }
+
+    .type-selector {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+      margin-bottom: 16px;
+    }
+
+    .type-option {
+      border-radius: 999px;
+      padding: 10px 10px;
+      border: 1px solid #d1d5db;
+      background: #ffffff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+      font-size: 14px;
+      color: #111827;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      box-shadow: 0 3px 6px rgba(15, 23, 42, 0.05);
+    }
+
+    .type-option span.emoji {
+      font-size: 18px;
+    }
+
+    .type-option:hover {
+      border-color: var(--primary);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 12px rgba(37,99,235,0.18);
+    }
+
+    .type-option.selected {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: #f9fafb;
+      border-color: transparent;
+      box-shadow: 0 8px 16px rgba(37, 99, 235, 0.35);
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: 1.5fr;
+      gap: 16px;
+      margin-bottom: 10px;
+    }
+
+    .form-group label {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 13px;
+      font-weight: 600;
+      color: #374151;
+      margin-bottom: 6px;
+    }
+
+    .form-group label span.icon {
+      font-size: 16px;
+    }
+
+    .form-group input,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px 12px;
+      border-radius: var(--radius-md);
+      border: 1px solid #d1d5db;
+      font-size: 14px;
+      outline: none;
+      transition: var(--transition-fast);
+      background: #ffffff;
+    }
+
+    .form-group input:focus,
+    .form-group textarea:focus {
+      border-color: var(--primary);
+      box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.15);
+    }
+
+    .form-group textarea {
+      min-height: 80px;
+      resize: vertical;
+    }
+
+    /* QUICK AMOUNT BUTTONS */
+    .quick-amounts {
+      margin-top: 6px;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      flex-wrap: wrap;
+      font-size: 12px;
+    }
+
+    .quick-label {
+      color: var(--text-muted);
+      margin-right: 2px;
+    }
+
+    .quick-amount {
+      padding: 5px 10px;
+      border-radius: 999px;
+      border: 1px solid #bfdbfe;
+      background: linear-gradient(135deg, #eff6ff, #dbeafe);
+      font-size: 12px;
+      font-weight: 600;
+      color: #1d4ed8;
+      cursor: pointer;
+      transition: 0.15s ease-out;
+      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.15);
+    }
+
+    .quick-amount:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 4px 8px rgba(37, 99, 235, 0.25);
+      border-color: #60a5fa;
+    }
+
+    .quick-amount:active {
+      transform: translateY(0);
+      box-shadow: 0 1px 2px rgba(37, 99, 235, 0.25);
+    }
+
+    .form-buttons {
+      display: grid;
+      grid-template-columns: 1.6fr 1fr;
+      gap: 10px;
+      margin-top: 6px;
+    }
+
+    button {
+      border-radius: 999px;
+      padding: 11px 14px;
+      border: none;
+      font-size: 14px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: var(--transition-fast);
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 6px;
+    }
+
+    #submit-btn {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: #f9fafb;
+      box-shadow: 0 10px 20px rgba(37, 99, 235, 0.35);
+    }
+
+    #submit-btn:hover {
+      transform: translateY(-1px);
+      filter: brightness(1.04);
+    }
+
+    #submit-btn:disabled {
+      background: #cbd5f5;
+      box-shadow: none;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    button[type="reset"] {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    button[type="reset"]:hover {
+      background: #d1d5db;
+    }
+
+    /* RESET BAR */
+    .reset-bar {
+      margin-bottom: 14px;
+      display: flex;
+      justify-content: flex-end;
+    }
+
+    #delete-btn {
+      width: 100%;
+      max-width: 280px;
+      background: linear-gradient(135deg, #f97373, #ef4444);
+      color: #fef2f2;
+      border-radius: 999px;
+      box-shadow: 0 10px 20px rgba(239, 68, 68, 0.35);
+      font-size: 13px;
+    }
+
+    #delete-btn:hover {
+      filter: brightness(1.03);
+      transform: translateY(-1px);
+    }
+
+    /* TABLE SECTION */
+    .transactions-section {
+      background: #f9fafb;
+      border-radius: var(--radius-xl);
+      padding: 16px 16px 18px;
+      border: 1px solid #e5e7eb;
+    }
+
+    .section-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      margin-bottom: 10px;
+    }
+
+    .section-title {
+      font-size: 15px;
+      font-weight: 600;
+      color: #111827;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .section-title span {
+      font-size: 18px;
+    }
+
+    .table-container {
+      overflow-x: auto;
+      border-radius: var(--radius-lg);
+      border: 1px solid #e5e7eb;
+      background: #ffffff;
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      min-width: 640px;
+    }
+
+    thead {
+      background: linear-gradient(135deg, #3b82f6, #2563eb);
+      color: #eff6ff;
+    }
+
+    th, td {
+      padding: 10px 14px;
+      text-align: left;
+      font-size: 13px;
+    }
+
+    th {
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    tbody tr {
+      border-bottom: 1px solid #e5e7eb;
+      transition: background 0.15s ease;
+    }
+
+    tbody tr:hover {
+      background: #f3f4ff;
+    }
+
+    tbody tr.newest {
+      background: var(--success-soft);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 3px 10px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 600;
+      white-space: nowrap;
+    }
+
+    .badge-sell {
+      background: var(--success-soft);
+      color: var(--success);
+    }
+
+    .badge-refund-customer {
+      background: var(--warning-soft);
+      color: var(--warning);
+    }
+
+    .badge-refund-merchant {
+      background: var(--danger-soft);
+      color: var(--danger);
+    }
+
+    .empty-state {
+      text-align: center;
+      padding: 40px 16px;
+      color: var(--text-muted);
+      font-size: 13px;
+    }
+
+    .empty-state-icon {
+      font-size: 40px;
+      margin-bottom: 6px;
+    }
+
+    /* TOAST */
+    .toast {
+      position: fixed;
+      top: 16px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 12px 18px;
+      border-radius: 999px;
+      color: #f9fafb;
+      font-weight: 500;
+      font-size: 13px;
+      z-index: 1000;
+      animation: slideDown 0.3s ease-out;
+      box-shadow: 0 10px 30px rgba(15,23,42,0.35);
+      max-width: 90%;
+      text-align: center;
+    }
+
+    .toast.success {
+      background: linear-gradient(135deg, #16a34a, #22c55e);
+    }
+
+    .toast.error {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+    }
+
+    @keyframes slideDown {
+      from {
+        opacity: 0;
+        transform: translate(-50%, -20px);
+      }
+      to {
+        opacity: 1;
+        transform: translate(-50%, 0);
+      }
+    }
+
+    /* MODAL */
+    .modal {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(15,23,42,0.5);
+      z-index: 2000;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: #ffffff;
+      border-radius: 20px;
+      padding: 22px 20px 18px;
+      max-width: 360px;
+      width: 100%;
+      box-shadow: var(--shadow-soft);
+      text-align: center;
+    }
+
+    .modal-title {
+      font-size: 17px;
+      font-weight: 600;
+      color: #111827;
+      margin-bottom: 10px;
+    }
+
+    .modal-message {
+      font-size: 13px;
+      color: var(--text-muted);
+      margin-bottom: 18px;
+    }
+
+    .modal-buttons {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .modal-btn {
+      border-radius: 999px;
+      padding: 9px 10px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+    }
+
+    .modal-btn-confirm {
+      background: linear-gradient(135deg, #ef4444, #b91c1c);
+      color: #fee2e2;
+    }
+
+    .modal-btn-cancel {
+      background: #e5e7eb;
+      color: #374151;
+    }
+
+    /* RESPONSIVE */
+    @media (max-width: 768px) {
+      body {
+        padding: 12px;
+      }
+
+      .app-shell {
+        border-radius: 18px;
+        padding: 18px 14px 20px;
+      }
+
+      header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
+      }
+
+      .header-right {
+        align-self: stretch;
+        text-align: left;
+        font-size: 10px;
+      }
+
+      .type-selector {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+      }
+
+      .form-buttons {
+        grid-template-columns: 1fr;
+      }
+
+      .reset-bar {
+        justify-content: center;
+      }
+
+      #delete-btn {
+        max-width: none;
+      }
+
+      .transactions-section {
+        padding: 14px 10px 14px;
+      }
+
+      .section-header {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 6px;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .type-selector {
+        grid-template-columns: 1fr;
+      }
+
+      table {
+        min-width: 520px;
+      }
+
+      .dashboard {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+  </style>
+
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="/_sdk/element_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+</head>
+
+<body>
+  <div class="app-shell">
+    <header>
+      <div class="brand">
+        <div class="brand-logo">¥</div>
+        <div>
+          <h1>Kiyomizu Cash Coupon Manager</h1>
+          <p class="subtitle">ระบบจัดการคูปองเงินสด สไตล์ญี่ปุ่นเรียบหรู</p>
+        </div>
+      </div>
+      <div class="header-right">
+        จัดการคูปองประจำวัน • เหมาะสำหรับใช้งานหน้าร้าน / แคชเชียร์
+      </div>
+    </header>
+
+    <!-- DASHBOARD -->
+    <div class="dashboard">
+      <div class="stat-card">
+        <div class="stat-label-row">
+          <div class="stat-label">💵 ยอดขายวันนี้</div>
+          <span class="stat-pill">รับเงินจากขายคูปอง</span>
+        </div>
+        <div class="stat-value" id="total-sales">฿0</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label-row">
+          <div class="stat-label">↩️ คืนเงินลูกค้า</div>
+          <span class="stat-pill">เงินออกให้ลูกค้า</span>
+        </div>
+        <div class="stat-value" id="total-refund-customer">฿0</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label-row">
+          <div class="stat-label">🏪 คืนให้ร้านค้า</div>
+          <span class="stat-pill">ชดเชยให้ร้านค้า</span>
+        </div>
+        <div class="stat-value" id="total-refund-merchant">฿0</div>
+      </div>
+
+      <div class="stat-card">
+        <div class="stat-label-row">
+          <div class="stat-label">📊 ยอดสุทธิวันนี้</div>
+          <span class="stat-pill">ยอดรับสุทธิ</span>
+        </div>
+        <div class="stat-value" id="net-amount">฿0</div>
+      </div>
+    </div>
+
+    <p class="transaction-count" id="transaction-count">
+      รายการทั้งหมดวันนี้: <strong>0</strong> รายการ
+    </p>
+
+    <!-- FORM -->
+    <div class="section-card">
+      <div class="section-heading">
+        <span class="icon">➕</span>
+        <span>บันทึกรายการใหม่</span>
+      </div>
+
+      <form id="transaction-form">
+        <div class="form-group" style="margin-bottom:12px;">
+          <label>ประเภทรายการ</label>
+          <div class="type-selector">
+            <div class="type-option" data-type="sell">
+              <span class="emoji">💵</span>
+              <span>ขายคูปอง</span>
+            </div>
+            <div class="type-option" data-type="refund_customer">
+              <span class="emoji">↩️</span>
+              <span>คืนเงินลูกค้า</span>
+            </div>
+            <div class="type-option" data-type="refund_merchant">
+              <span class="emoji">🏪</span>
+              <span>คืนให้ร้านค้า</span>
+            </div>
+          </div>
+          <input type="hidden" id="type" name="type">
+        </div>
+
+        <div class="form-grid">
+          <div class="form-group">
+            <label for="amount">
+              <span class="icon">💰</span>
+              <span>จำนวนเงิน (บาท)</span>
+            </label>
+            <input type="number" id="amount" name="amount" required min="0" step="0.01">
+
+            <!-- ปุ่มคูปองด่วน -->
+            <div class="quick-amounts">
+              <span class="quick-label">ชุดคูปองด่วน</span>
+              <button type="button" class="quick-amount" data-add="10">+10</button>
+              <button type="button" class="quick-amount" data-add="50">+50</button>
+              <button type="button" class="quick-amount" data-add="100">+100</button>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="note">
+              <span class="icon">📌</span>
+              <span>หมายเหตุ</span>
+            </label>
+            <textarea id="note" name="note" placeholder="ระบุรายละเอียดเพิ่มเติม (ถ้ามี)"></textarea>
+          </div>
+        </div>
+
+        <div class="form-buttons">
+          <button type="submit" id="submit-btn">💾 บันทึกรายการ</button>
+          <button type="reset">🧹 ล้างข้อมูล</button>
+        </div>
+      </form>
+    </div>
+
+    <!-- RESET BAR -->
+    <div class="reset-bar">
+      <button id="delete-btn">🗑️ รีเซ็ตระบบวันนี้</button>
+    </div>
+
+    <!-- TRANSACTIONS TABLE -->
+    <div class="transactions-section">
+      <div class="section-header">
+        <div class="section-title">
+          <span>📋</span>
+          <span>รายการทั้งหมดวันนี้</span>
+        </div>
+      </div>
+      <div class="table-container" id="transactions-container">
+        <!-- Table / empty-state will be rendered here -->
+      </div>
+    </div>
+  </div>
+
+  <!-- MODAL -->
+  <div class="modal" id="delete-modal">
+    <div class="modal-content">
+      <div class="modal-title">⚠️ ยืนยันการรีเซ็ตระบบ</div>
+      <p class="modal-message">
+        คุณต้องการลบรายการทั้งหมดของวันนี้หรือไม่?<br>
+        การกระทำนี้ไม่สามารถย้อนกลับได้
+      </p>
+      <div class="modal-buttons">
+        <button class="modal-btn modal-btn-confirm" id="confirm-delete">ยืนยัน</button>
+        <button class="modal-btn modal-btn-cancel" id="cancel-delete">ยกเลิก</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== JS: คงโครงทำงานเดิมทั้งหมด ===== -->
+  <script>
+    // ===== CONFIGURATION =====
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbw4qs8nDWw2yXcL6JuFIebLAFSC2gtIU52OaB_LNucYB9dMCIZItxLIkgERLhGmvnXd/exec";
+
+    // ===== STATE =====
+    let currentTransactions = [];
+    let selectedType = null;
+
+    // ===== ELEMENTS =====
+    const typeOptions = document.querySelectorAll('.type-option');
+    const typeInput = document.getElementById('type');
+    const transactionForm = document.getElementById('transaction-form');
+    const submitBtn = document.getElementById('submit-btn');
+    const deleteBtn = document.getElementById('delete-btn');
+    const deleteModal = document.getElementById('delete-modal');
+    const confirmDeleteBtn = document.getElementById('confirm-delete');
+    const cancelDeleteBtn = document.getElementById('cancel-delete');
+
+    // ช่องจำนวนเงิน + ปุ่มคูปองด่วน
+    const amountInput = document.getElementById('amount');
+    const quickAmountButtons = document.querySelectorAll('.quick-amount');
+
+    // ===== INITIALIZATION =====
+    document.addEventListener('DOMContentLoaded', () => {
+      loadTodayTransactions();
+      setupEventListeners();
+    });
+
+    function setupEventListeners() {
+      // Type selection
+      typeOptions.forEach(option => {
+        option.addEventListener('click', () => {
+          typeOptions.forEach(opt => opt.classList.remove('selected'));
+          option.classList.add('selected');
+          selectedType = option.dataset.type;
+          typeInput.value = selectedType;
+        });
+      });
+
+      // Form submission
+      transactionForm.addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        if (!selectedType) {
+          showToast('❌ กรุณาเลือกประเภทรายการ', 'error');
+          return;
+        }
+
+        await createTransaction();
+      });
+
+      // Form reset
+      transactionForm.addEventListener('reset', () => {
+        amountInput.value = '';
+        document.getElementById('note').value = '';
+        // Keep type selection
+      });
+
+      // Delete button
+      deleteBtn.addEventListener('click', () => {
+        deleteModal.classList.add('active');
+      });
+
+      confirmDeleteBtn.addEventListener('click', async () => {
+        deleteModal.classList.remove('active');
+        await deleteAllTransactions();
+      });
+
+      cancelDeleteBtn.addEventListener('click', () => {
+        deleteModal.classList.remove('active');
+      });
+
+      // Close modal on backdrop click
+      deleteModal.addEventListener('click', (e) => {
+        if (e.target === deleteModal) {
+          deleteModal.classList.remove('active');
+        }
+      });
+
+      // Quick amount buttons (คูปองด่วน)
+      quickAmountButtons.forEach(btn => {
+        btn.addEventListener('click', () => {
+          const add = parseFloat(btn.dataset.add) || 0;
+          const current = parseFloat(amountInput.value) || 0;
+          amountInput.value = current + add;
+          amountInput.focus();
+        });
+      });
+    }
+
+    // ===== API FUNCTIONS =====
+    async function loadTodayTransactions() {
+      try {
+        const response = await fetch(`${APPS_SCRIPT_URL}?action=listToday`, {
+          method: 'GET'
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const data = await response.json();
+        currentTransactions = Array.isArray(data) ? data : [];
+        updateDashboard();
+        renderTransactionsTable();
+      } catch (error) {
+        console.error('Error loading transactions:', error);
+        showToast('❌ ไม่สามารถโหลดข้อมูลได้', 'error');
+        currentTransactions = [];
+        updateDashboard();
+        renderTransactionsTable();
+      }
+    }
+
+    async function createTransaction() {
+      const amount = parseFloat(amountInput.value);
+      const note = document.getElementById('note').value;
+
+      // Get Bangkok time
+      const now = new Date();
+      const bangkokTime = new Date(now.toLocaleString('en-US', { timeZone: 'Asia/Bangkok' }));
+      
+      const transaction_date = bangkokTime.toISOString().split('T')[0];
+      const transaction_time = bangkokTime.toTimeString().split(' ')[0];
+
+      const payload = {
+        action: 'create',
+        transaction_date,
+        transaction_time,
+        type: selectedType,
+        amount,
+        note,
+        timestamp: Date.now()
+      };
+
+      console.log('Sending payload:', payload);
+
+      // Disable submit button
+      submitBtn.disabled = true;
+      submitBtn.textContent = '⏳ กำลังบันทึก...';
+
+      try {
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify(payload)
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Server response:', result);
+
+        if (result.success === true) {
+          showToast('✅ บันทึกรายการสำเร็จ', 'success');
+          
+          // Clear form but keep type selection
+          amountInput.value = '';
+          document.getElementById('note').value = '';
+          
+          // Reload transactions
+          await loadTodayTransactions();
+        } else {
+          throw new Error(result.error || 'บันทึกไม่สำเร็จ');
+        }
+      } catch (error) {
+        console.error('Error creating transaction:', error);
+        showToast(`❌ ${error.message || 'ไม่สามารถบันทึกรายการได้'}`, 'error');
+      } finally {
+        submitBtn.disabled = false;
+        submitBtn.textContent = '💾 บันทึกรายการ';
+      }
+    }
+
+    async function deleteAllTransactions() {
+      try {
+        const response = await fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'text/plain;charset=utf-8'
+          },
+          body: JSON.stringify({ action: 'deleteAll' })
+        });
+
+        if (!response.ok) {
+          throw new Error(`HTTP error! status: ${response.status}`);
+        }
+
+        const result = await response.json();
+        console.log('Delete response:', result);
+
+        if (result.success === true) {
+          showToast('✅ รีเซ็ตระบบสำเร็จ', 'success');
+          await loadTodayTransactions();
+        } else {
+          throw new Error(result.error || 'ลบข้อมูลไม่สำเร็จ');
+        }
+      } catch (error) {
+        console.error('Error deleting transactions:', error);
+        showToast(`❌ ${error.message || 'ไม่สามารถรีเซ็ตระบบได้'}`, 'error');
+      }
+    }
+
+    // ===== UI UPDATE FUNCTIONS =====
+    function updateDashboard() {
+      let totalSales = 0;
+      let totalRefundCustomer = 0;
+      let totalRefundMerchant = 0;
+
+      currentTransactions.forEach(transaction => {
+        const amount = parseFloat(transaction.amount) || 0;
+        
+        if (transaction.type === 'sell') {
+          totalSales += amount;
+        } else if (transaction.type === 'refund_customer') {
+          totalRefundCustomer += amount;
+        } else if (transaction.type === 'refund_merchant') {
+          totalRefundMerchant += amount;
+        }
+      });
+
+      const netAmount = totalSales - totalRefundCustomer - totalRefundMerchant;
+
+      document.getElementById('total-sales').textContent = `฿${totalSales.toLocaleString()}`;
+      document.getElementById('total-refund-customer').textContent = `฿${totalRefundCustomer.toLocaleString()}`;
+      document.getElementById('total-refund-merchant').textContent = `฿${totalRefundMerchant.toLocaleString()}`;
+      document.getElementById('net-amount').textContent = `฿${netAmount.toLocaleString()}`;
+      document.getElementById('transaction-count').textContent = `รายการทั้งหมดวันนี้: ${currentTransactions.length} รายการ`;
+    }
+
+    function renderTransactionsTable() {
+      const container = document.getElementById('transactions-container');
+
+      if (currentTransactions.length === 0) {
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">📭</div>
+            <div>ยังไม่มีรายการ</div>
+            <div style="margin-top: 5px; font-size: 13px;">เริ่มต้นบันทึกรายการแรกของคุณได้เลย!</div>
+          </div>
+        `;
+        return;
+      }
+
+      // Sort by timestamp DESC
+      const sortedTransactions = [...currentTransactions].sort((a, b) => {
+        const timeA = a.timestamp || 0;
+        const timeB = b.timestamp || 0;
+        return timeB - timeA;
+      });
+      
+      const newestTimestamp = sortedTransactions[0]?.timestamp;
+
+      let tableHTML = `
+        <table>
+          <thead>
+            <tr>
+              <th>📅 วันที่</th>
+              <th>🕐 เวลา</th>
+              <th>📝 ประเภท</th>
+              <th>💰 จำนวนเงิน</th>
+              <th>📌 หมายเหตุ</th>
+            </tr>
+          </thead>
+          <tbody>
+      `;
+
+      sortedTransactions.forEach(transaction => {
+        const isNewest = transaction.timestamp === newestTimestamp;
+        const badgeClass = `badge badge-${transaction.type.replace('_', '-')}`;
+        
+        let typeLabel = '';
+        if (transaction.type === 'sell') typeLabel = '💵 ขายคูปอง';
+        else if (transaction.type === 'refund_customer') typeLabel = '↩️ คืนเงินลูกค้า';
+        else if (transaction.type === 'refund_merchant') typeLabel = '🏪 คืนให้ร้านค้า';
+
+        tableHTML += `
+          <tr${isNewest ? ' class="newest"' : ''}>
+            <td>${transaction.transaction_date || '-'}</td>
+            <td>${transaction.transaction_time || '-'}</td>
+            <td><span class="${badgeClass}">${typeLabel}</span></td>
+            <td>฿${parseFloat(transaction.amount).toLocaleString()}</td>
+            <td>${transaction.note || '-'}</td>
+          </tr>
+        `;
+      });
+
+      tableHTML += `
+          </tbody>
+        </table>
+      `;
+
+      container.innerHTML = tableHTML;
+    }
+
+    function showToast(message, type = 'success') {
+      const toast = document.createElement('div');
+      toast.className = `toast ${type}`;
+      toast.textContent = message;
+      document.body.appendChild(toast);
+
+      setTimeout(() => {
+        toast.remove();
+      }, 2800);
+    }
+  </script>
+
+  <!-- (ถ้าระบบเดิมมีสคริปต์อื่นที่โฮสต์เติมมาเอง เช่น Cloudflare ก็ปล่อยให้โฮสต์จัดการได้เลย) -->
+</body>
+</html>
