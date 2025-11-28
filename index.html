@@ -299,17 +299,19 @@
     }
 
     .quick-amount {
-      padding: 5px 10px;
-      border-radius: 999px;
-      border: 1px solid #bfdbfe;
-      background: linear-gradient(135deg, #eff6ff, #dbeafe);
-      font-size: 12px;
-      font-weight: 600;
-      color: #1d4ed8;
-      cursor: pointer;
-      transition: 0.15s ease-out;
-      box-shadow: 0 2px 4px rgba(37, 99, 235, 0.15);
-    }
+  padding: 10px 18px;        /* เดิม 5px 10px → ปุ่มสูงขึ้นและยาวขึ้น */
+  border-radius: 999px;
+  border: 1px solid #bfdbfe;
+  background: linear-gradient(135deg, #eff6ff, #dbeafe);
+  font-size: 14px;           /* เดิม 12px → ตัวใหญ่ขึ้น กดง่าย มองง่าย */
+  font-weight: 600;
+  color: #1d4ed8;
+  cursor: pointer;
+  transition: 0.15s ease-out;
+  box-shadow: 0 2px 4px rgba(37, 99, 235, 0.15);
+  min-width: 64px;           /* บังคับให้ปุ่มไม่เล็กเกินไป */
+}
+
 
     .quick-amount:hover {
       transform: translateY(-1px);
@@ -1229,6 +1231,7 @@
   <!-- (ถ้าระบบเดิมมีสคริปต์อื่นที่โฮสต์เติมมาเอง เช่น Cloudflare ก็ปล่อยให้โฮสต์จัดการได้เลย) -->
 </body>
 </html>
+
 
 
 
